@@ -6,6 +6,7 @@ var PlanesOnTable = 0;
 var PlanesToReap  = 0;
 var SelectedPlane = null;
 var SpecialSquawk = false;
+var Metric = false;
 
 var iSortCol=-1;
 var bSortASC=true;
