@@ -2,7 +2,7 @@ html, body {
     margin: 0; padding: 0; background-color: #ffffff; font-family: Tahoma, Sans-Serif;
     font-size: 10pt; overflow: auto;
 }
-#tableinfo { font-size: x-large; font-family: monospace; }
+#tableinfo { font-size: 50pt; font-family: monospace; width:100%; height:100% }
 
 .vPosition  { font-weight: bold; background-color: #f5fff5; }
 .plane_table_row { cursor: pointer; }

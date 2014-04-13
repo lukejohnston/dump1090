@@ -133,22 +133,22 @@ function refreshTableInfo() {
 			html += '<td>' + tableplane.flight + '</td>';
 
 			if (tableplane.squawk != '0000' ) {
-				html += '<td align="right">' + tableplane.squawk + '</td>';
+				html += '<td>' + tableplane.squawk + '</td>';
 		    } else {
-				html += '<td align="right">&nbsp;</td>';
+				html += '<td>&nbsp;</td>';
 		    }
 		    
 		    if (Metric) {
-				html += '<td align="right">' + Math.round(tableplane.altitude / 3.2828) + '</td>';
+				html += '<td>' + Math.round(tableplane.altitude / 3.2828) + '</td>';
 				html += '</tr><tr class="plane_table_row">';
-				html += '<td align="right">' + Math.round(tableplane.speed * 1.852) + '</td>';
+				html += '<td>' + Math.round(tableplane.speed * 1.852) + '</td>';
 		    } else {
-				html += '<td align="right">' + tableplane.altitude + '</td>';
+				html += '<td>' + tableplane.altitude + '</td>';
 				html += '</tr><tr class="plane_table_row">';
-				html += '<td align="right">' + tableplane.speed + '</td>';
+				html += '<td>' + tableplane.speed + '</td>';
 		    }
 				
-			html += '<td align="right">';
+			html += '<td>';
 			
 			if (tableplane.vTrack) {
 				html += normalizeTrack(tableplane.track, tableplane.vTrack)[2];
@@ -157,8 +157,8 @@ function refreshTableInfo() {
 		    }
 
 			html += '</td>';
-			html += '<td align="right">' + tableplane.messages + '</td>';
-			html += '<td align="right">' + tableplane.seen + '</td>';
+			html += '<td>' + tableplane.messages + '</td>';
+			html += '<td>' + tableplane.seen + '</td>';
 			html += '</tr>';
 			break;
 		}
