@@ -8,11 +8,11 @@ html, body {
 .plane_table_row { cursor: pointer; font-size: 50pt; }
 .caption_row { cursor: pointer; font-size: 20pt; font-weight: lighter; }
 
-.caption { font-size: 20pt; font-weight: lighter; text-align: center; position: absolute; bottom: 0; }
-.value { font-size:45pt; text-align: center; position: absolute; top: 0; }
+.caption { font-size: 20pt; font-weight: lighter; text-align: center; position: absolute; bottom: 0; width:inherit; }
+.value { font-size:45pt; text-align: center; position: absolute; top: 0; width:inherit; }
 
-.icao { position: fixed; top: 0; left: 0; }
-.flight { position: fixed; top: 0; left: 100px; }
+.icao { position: fixed; top: 0; left: 0; width:200px; height:100px; }
+.flight { position: fixed; top: 0; left: 200px; width:200px; height:100px; }
 
 .pointer { cursor: pointer; }
 
