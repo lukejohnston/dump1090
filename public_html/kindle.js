@@ -19,9 +19,6 @@ ZoomLvl   = Number(localStorage['ZoomLvl']) || CONST_ZOOMLVL;
 
 function fetchData() {
 	$.getJSON('/dump1090/data.json', function(data) {
-		PlanesOnMap = 0
-		SpecialSquawk = false;
-		
 		// Loop through all the planes in the data packet
 		for (var j=0; j < data.length; j++) {
 			// Do we already have this plane object in Planes?
@@ -37,11 +34,6 @@ function fetchData() {
             	data[j].squawk = '7700';
             } //*/
             
-            // Set SpecialSquawk-value
-            if (data[j].squawk == '7500' || data[j].squawk == '7600' || data[j].squawk == '7700') {
-                SpecialSquawk = true;
-            }
-
 			// Call the function update
 			plane.funcUpdateData(data[j]);
 			
@@ -149,24 +141,6 @@ function refreshTableInfo() {
 	for (var tablep in Planes) {
 		var tableplane = Planes[tablep]
 		if (!tableplane.reapable) {
-			var specialStyle = "";
-			// Is this the plane we selected?
-			if (tableplane.icao == SelectedPlane) {
-				specialStyle += " selected";
-			}
-			// Lets hope we never see this... Aircraft Hijacking
-			if (tableplane.squawk == 7500) {
-				specialStyle += " squawk7500";
-			}
-			// Radio Failure
-			if (tableplane.squawk == 7600) {
-				specialStyle += " squawk7600";
-			}
-			// Emergancy
-			if (tableplane.squawk == 7700) {
-				specialStyle += " squawk7700";
-			}
-			
 			if (tableplane.vPosition == true) {
 				html += '<tr class="plane_table_row vPosition' + specialStyle + '">';
 			} else {
@@ -205,22 +179,6 @@ function refreshTableInfo() {
 	html += '</tbody></table>';
 
 	document.getElementById('planes_table').innerHTML = html;
-
-	if (SpecialSquawk) {
-    	$('#SpecialSquawkWarning').css('display', 'inline');
-    } else {
-        $('#SpecialSquawkWarning').css('display', 'none');
-    }
-
-	// Click event for table
-	$('#planes_table').find('tr').click( function(){
-		var hex = $(this).find('td:first').text();
-		if (hex != "ICAO") {
-			selectPlaneByHex(hex);
-			refreshTableInfo();
-			refreshSelected();
-		}
-	});
 
 	sortTable("tableinfo");
 }
