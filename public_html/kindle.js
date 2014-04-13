@@ -138,15 +138,11 @@ function refreshTableInfo() {
 				html += '<td>&nbsp;</td>';
 		    }
 		    
-		    if (Metric) {
-				html += '<td>' + Math.round(tableplane.altitude / 3.2828) + '</td>';
-				html += '</tr><tr class="plane_table_row">';
-				html += '<td>' + Math.round(tableplane.speed * 1.852) + '</td>';
-		    } else {
-				html += '<td>' + tableplane.altitude + '</td>';
-				html += '</tr><tr class="plane_table_row">';
-				html += '<td>' + tableplane.speed + '</td>';
-		    }
+			html += '<td>' + tableplane.altitude + '</td>';
+			html += '</tr>';
+			html += '<tr class="caption_row"><td>ICAO</td><td>Flight</td><td>Squawk</td><td>Altitude (ft)</td></tr>';
+			html += '<tr class="plane_table_row">';
+			html += '<td>' + tableplane.speed + '</td>';
 				
 			html += '<td>';
 			
@@ -160,6 +156,7 @@ function refreshTableInfo() {
 			html += '<td>' + tableplane.messages + '</td>';
 			html += '<td>' + tableplane.seen + '</td>';
 			html += '</tr>';
+			html += '<tr class="caption_row"><td>Speed (kt)</td><td>Track</td><td>Messages</td><td>Seen</td></tr>';
 			break;
 		}
 	}
