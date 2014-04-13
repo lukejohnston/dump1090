@@ -8,5 +8,11 @@ html, body {
 .plane_table_row { cursor: pointer; font-size: 50pt; }
 .caption_row { cursor: pointer; font-size: 20pt; font-weight: lighter; }
 
+.caption { font-size: 20pt; font-weight: lighter; text-align: center; position: absolute; bottom: 0; }
+.value { font-size:45pt; text-align: center; position: absolute; top: 0; }
+
+.icao { position: fixed; top: 0; left: 0; }
+.flight { position: fixed; top: 0; left: 100px; }
+
 .pointer { cursor: pointer; }
 

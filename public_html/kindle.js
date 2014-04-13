@@ -123,11 +123,11 @@ function normalizeTrack(track, valid){
 
 // Refeshes the larger table of all the planes
 function refreshTableInfo() {
-	var html = '<table id="tableinfo" width="100%"><tbody>';
+	//var html = '<table id="tableinfo" width="100%"><tbody>';
 	for (var tablep in Planes) {
 		var tableplane = Planes[tablep]
 		if (!tableplane.reapable) {
-			html += '<tr class="plane_table_row">';
+			/*html += '<tr class="plane_table_row">';
 		    
 			html += '<td>' + tableplane.icao + '</td>';
 			html += '<td>' + tableplane.flight + '</td>';
@@ -156,15 +156,19 @@ function refreshTableInfo() {
 			html += '<td>' + tableplane.messages + '</td>';
 			html += '<td>' + tableplane.seen + '</td>';
 			html += '</tr>';
-			html += '<tr class="caption_row"><td>Speed (kt)</td><td>Track</td><td>Messages</td><td>Seen</td></tr>';
+			html += '<tr class="caption_row"><td>Speed (kt)</td><td>Track</td><td>Messages</td><td>Seen</td></tr>';*/
+
+			document.getElementById('icaovalue').innerHTML = tableplane.icao;
+			document.getElementById('flightvalue').innerHTML = tableplane.flight;
+
 			break;
 		}
 	}
-	html += '</tbody></table>';
+//	html += '</tbody></table>';
 
-	document.getElementById('planes_table').innerHTML = html;
+//	document.getElementById('planes_table').innerHTML = html;
 
-	sortTable("tableinfo");
+//	sortTable("tableinfo");
 }
 
 // Credit goes to a co-worker that needed a similar functions for something else
