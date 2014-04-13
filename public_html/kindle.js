@@ -1,22 +1,8 @@
 // Define our global variables
-var GoogleMap     = null;
 var Planes        = {};
-var PlanesOnMap   = 0;
 var PlanesOnTable = 0;
 var PlanesToReap  = 0;
-var SelectedPlane = null;
-var SpecialSquawk = false;
 var Metric = false;
-
-var iSortCol=-1;
-var bSortASC=true;
-var bDefaultSortASC=true;
-var iDefaultSortCol=3;
-
-// Get current map settings
-CenterLat = Number(localStorage['CenterLat']) || CONST_CENTERLAT;
-CenterLon = Number(localStorage['CenterLon']) || CONST_CENTERLON;
-ZoomLvl   = Number(localStorage['ZoomLvl']) || CONST_ZOOMLVL;
 
 function fetchData() {
 	$.getJSON('/dump1090/data.json', function(data) {
@@ -127,110 +113,28 @@ function refreshTableInfo() {
 	for (var tablep in Planes) {
 		var tableplane = Planes[tablep]
 		if (!tableplane.reapable) {
-			/*html += '<tr class="plane_table_row">';
-		    
-			html += '<td>' + tableplane.icao + '</td>';
-			html += '<td>' + tableplane.flight + '</td>';
-
-			if (tableplane.squawk != '0000' ) {
-				html += '<td>' + tableplane.squawk + '</td>';
-		    } else {
-				html += '<td>&nbsp;</td>';
-		    }
-		    
-			html += '<td>' + tableplane.altitude + '</td>';
-			html += '</tr>';
-			html += '<tr class="caption_row"><td>ICAO</td><td>Flight</td><td>Squawk</td><td>Altitude (ft)</td></tr>';
-			html += '<tr class="plane_table_row">';
-			html += '<td>' + tableplane.speed + '</td>';
-				
-			html += '<td>';
-			
-			if (tableplane.vTrack) {
-				html += normalizeTrack(tableplane.track, tableplane.vTrack)[2];
-		    } else {
-				html += '&nbsp;';
-		    }
-
-			html += '</td>';
-			html += '<td>' + tableplane.messages + '</td>';
-			html += '<td>' + tableplane.seen + '</td>';
-			html += '</tr>';
-			html += '<tr class="caption_row"><td>Speed (kt)</td><td>Track</td><td>Messages</td><td>Seen</td></tr>';*/
-
 			document.getElementById('icaovalue').innerHTML = tableplane.icao;
 			document.getElementById('flightvalue').innerHTML = tableplane.flight;
+
+			if (tableplane.squawk != '0000' ) {
+				document.getElementById('squawkvalue').innerHTML = tableplane.squawk;
+		    } else {
+				document.getElementById('squawkvalue').innerHTML = tableplane.squawk;
+		    }
+
+			document.getElementById('altitudevalue').innerHTML = tableplane.altitude;
+			document.getElementById('speedvalue').innerHTML = tableplane.speed;
+
+			if (tableplane.vTrack) {
+				document.getElementById('trackvalue').innerHTML =  normalizeTrack(tableplane.track, tableplane.vTrack)[2];
+		    } else {
+				document.getElementById('trackvalue').innerHTML = '&nbsp;';
+		    }
+
+			document.getElementById('messagesvalue').innerHTML = tableplane.messages;
+			document.getElementById('seenvalue').innerHTML = tableplane.seen;
 
 			break;
 		}
 	}
-//	html += '</tbody></table>';
-
-//	document.getElementById('planes_table').innerHTML = html;
-
-//	sortTable("tableinfo");
-}
-
-// Credit goes to a co-worker that needed a similar functions for something else
-// we get a copy of it free ;)
-function setASC_DESC(iCol) {
-	if(iSortCol==iCol) {
-		bSortASC=!bSortASC;
-	} else {
-		bSortASC=bDefaultSortASC;
-	}
-}
-
-function sortTable(szTableID,iCol) { 
-	//if iCol was not provided, and iSortCol is not set, assign default value
-	if (typeof iCol==='undefined'){
-		if(iSortCol!=-1){
-			var iCol=iSortCol;
-		} else {
-			var iCol=iDefaultSortCol;
-		}
-	}
-
-	//retrieve passed table element
-	var oTbl=document.getElementById(szTableID).tBodies[0];
-	var aStore=[];
-
-	//If supplied col # is greater than the actual number of cols, set sel col = to last col
-	if (typeof oTbl.rows[0] !== 'undefined' && oTbl.rows[0].cells.length <= iCol) {
-		iCol=(oTbl.rows[0].cells.length-1);
-    }
-
-	//store the col #
-	iSortCol=iCol;
-
-	//determine if we are delaing with numerical, or alphanumeric content
-	var bNumeric = false;
-	if ((typeof oTbl.rows[0] !== 'undefined') &&
-	    (!isNaN(parseFloat(oTbl.rows[0].cells[iSortCol].textContent ||
-	    oTbl.rows[0].cells[iSortCol].innerText)))) {
-	    bNumeric = true;
-	}
-
-	//loop through the rows, storing each one inro aStore
-	for (var i=0,iLen=oTbl.rows.length;i<iLen;i++){
-		var oRow=oTbl.rows[i];
-		vColData=bNumeric?parseFloat(oRow.cells[iSortCol].textContent||oRow.cells[iSortCol].innerText):String(oRow.cells[iSortCol].textContent||oRow.cells[iSortCol].innerText);
-		aStore.push([vColData,oRow]);
-	}
-
-	//sort aStore ASC/DESC based on value of bSortASC
-	if (bNumeric) { //numerical sort
-		aStore.sort(function(x,y){return bSortASC?x[0]-y[0]:y[0]-x[0];});
-	} else { //alpha sort
-		aStore.sort();
-		if(!bSortASC) {
-			aStore.reverse();
-	    }
-	}
-
-	//rewrite the table rows to the passed table element
-	for(var i=0,iLen=aStore.length;i<iLen;i++){
-		oTbl.appendChild(aStore[i][1]);
-	}
-	aStore=null;
 }

@@ -13,6 +13,13 @@ html, body {
 
 .icao { position: fixed; top: 0; left: 0; width:200px; height:100px; }
 .flight { position: fixed; top: 0; left: 200px; width:200px; height:100px; }
+.squawk { position: fixed; top: 0; left: 400px; width:200px; height:100px; }
+.altitude { position: fixed; top: 0; left: 600px; width:200px; height: 100px; }
+
+.speed { position: fixed; top: 200px; left: 0; width:200px; height:100px; }
+.track { position: fixed; top: 200px; left: 200px; width:200px; height:100px; }
+.messages { position: fixed; top: 200px; left: 400px; width:200px; height:100px; }
+.seen { position: fixed; top: 200px; left: 600px; width:200px; height: 100px; }
 
 .pointer { cursor: pointer; }
 
