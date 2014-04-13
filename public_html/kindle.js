@@ -142,9 +142,9 @@ function refreshTableInfo() {
 		var tableplane = Planes[tablep]
 		if (!tableplane.reapable) {
 			if (tableplane.vPosition == true) {
-				html += '<tr class="plane_table_row vPosition' + specialStyle + '">';
+				html += '<tr class="plane_table_row vPosition">';
 			} else {
-				html += '<tr class="plane_table_row ' + specialStyle + '">';
+				html += '<tr class="plane_table_row">';
 		    }
 		    
 			html += '<td>' + tableplane.icao + '</td>';
