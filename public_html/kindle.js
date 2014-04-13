@@ -122,58 +122,44 @@ function normalizeTrack(track, valid){
 
 // Refeshes the larger table of all the planes
 function refreshTableInfo() {
-	var html = '<table id="tableinfo" width="100%">';
-	html += '<thead style="background-color: #BBBBBB; cursor: pointer;">';
-	html += '<td onclick="setASC_DESC(\'0\');sortTable(\'tableinfo\',\'0\');">ICAO</td>';
-	html += '<td onclick="setASC_DESC(\'1\');sortTable(\'tableinfo\',\'1\');">Flight</td>';
-	html += '<td onclick="setASC_DESC(\'2\');sortTable(\'tableinfo\',\'2\');" ' +
-	    'align="right">Squawk</td>';
-	html += '<td onclick="setASC_DESC(\'3\');sortTable(\'tableinfo\',\'3\');" ' +
-	    'align="right">Altitude</td>';
-	html += '<td onclick="setASC_DESC(\'4\');sortTable(\'tableinfo\',\'4\');" ' +
-	    'align="right">Speed</td>';
-	html += '<td onclick="setASC_DESC(\'5\');sortTable(\'tableinfo\',\'5\');" ' +
-	    'align="right">Track</td>';
-	html += '<td onclick="setASC_DESC(\'6\');sortTable(\'tableinfo\',\'6\');" ' +
-	    'align="right">Msgs</td>';
-	html += '<td onclick="setASC_DESC(\'7\');sortTable(\'tableinfo\',\'7\');" ' +
-	    'align="right">Seen</td></thead><tbody>';
+	var html = '<table id="tableinfo" width="100%"><tbody>';
 	for (var tablep in Planes) {
 		var tableplane = Planes[tablep]
 		if (!tableplane.reapable) {
-			if (tableplane.vPosition == true) {
-				html += '<tr class="plane_table_row vPosition">';
-			} else {
-				html += '<tr class="plane_table_row">';
-		    }
+			html += '<tr class="plane_table_row">';
 		    
 			html += '<td>' + tableplane.icao + '</td>';
 			html += '<td>' + tableplane.flight + '</td>';
+
 			if (tableplane.squawk != '0000' ) {
-    			html += '<td align="right">' + tableplane.squawk + '</td>';
-    	    } else {
-    	        html += '<td align="right">&nbsp;</td>';
-    	    }
-    	    
-    	    if (Metric) {
-    			html += '<td align="right">' + Math.round(tableplane.altitude / 3.2828) + '</td>';
-    			html += '<td align="right">' + Math.round(tableplane.speed * 1.852) + '</td>';
-    	    } else {
-    	        html += '<td align="right">' + tableplane.altitude + '</td>';
-    	        html += '<td align="right">' + tableplane.speed + '</td>';
-    	    }
-			
+				html += '<td align="right">' + tableplane.squawk + '</td>';
+		    } else {
+				html += '<td align="right">&nbsp;</td>';
+		    }
+		    
+		    if (Metric) {
+				html += '<td align="right">' + Math.round(tableplane.altitude / 3.2828) + '</td>';
+				html += '</tr><tr class="plane_table_row">';
+				html += '<td align="right">' + Math.round(tableplane.speed * 1.852) + '</td>';
+		    } else {
+				html += '<td align="right">' + tableplane.altitude + '</td>';
+				html += '</tr><tr class="plane_table_row">';
+				html += '<td align="right">' + tableplane.speed + '</td>';
+		    }
+				
 			html += '<td align="right">';
+			
 			if (tableplane.vTrack) {
-    			 html += normalizeTrack(tableplane.track, tableplane.vTrack)[2];
-    			 // html += ' (' + normalizeTrack(tableplane.track, tableplane.vTrack)[1] + ')';
-    	    } else {
-    	        html += '&nbsp;';
-    	    }
-    	    html += '</td>';
+				html += normalizeTrack(tableplane.track, tableplane.vTrack)[2];
+		    } else {
+				html += '&nbsp;';
+		    }
+
+			html += '</td>';
 			html += '<td align="right">' + tableplane.messages + '</td>';
 			html += '<td align="right">' + tableplane.seen + '</td>';
 			html += '</tr>';
+			break;
 		}
 	}
 	html += '</tbody></table>';
