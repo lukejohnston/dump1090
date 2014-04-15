@@ -119,7 +119,7 @@ function refreshTableInfo() {
 			if (tableplane.squawk != '0000' ) {
 				document.getElementById('squawkvalue').innerHTML = tableplane.squawk;
 		    } else {
-				document.getElementById('squawkvalue').innerHTML = tableplane.squawk;
+				document.getElementById('squawkvalue').innerHTML = '&nbsp;';
 		    }
 
 			document.getElementById('altitudevalue').innerHTML = tableplane.altitude;
