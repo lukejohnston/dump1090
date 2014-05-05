@@ -195,6 +195,13 @@ static char *request(const char *url)
     char *data = NULL;
     long code;
 
+    char key[FA_KEY_LENGTH + 1];
+    char userpwd[FA_KEY_LENGTH + 13 + 1];
+    FILE *keyfile = fopen("keyfile", "r");
+    fgets(key, FA_KEY_LENGTH, keyfile);
+    fclose(keyfile);
+    sprintf(userpwd, "lukejohnston:%s", key);
+
     curl_global_init(CURL_GLOBAL_ALL);
     curl = curl_easy_init();
     if(!curl)
@@ -215,6 +222,8 @@ static char *request(const char *url)
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_response);
+    curl_easy_setopt(curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+    curl_easy_setopt(curl, CURLOPT_USERPWD, userpwd);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &write_result);
 
     status = curl_easy_perform(curl);
@@ -256,13 +265,8 @@ error:
 void *fa_fetch(void *arg) {
     struct aircraft *a = (struct aircraft *)arg;
 
-    char key[FA_KEY_LENGTH + 1];
-    FILE *keyfile = fopen("keyfile", "r");
-    fgets(key, FA_KEY_LENGTH, keyfile);
-    fclose(keyfile);
-
     char url[2048];
-    sprintf(url, FA_URL_FORMAT, key, a->flight);
+    sprintf(url, FA_URL_FORMAT, a->flight);
     
     char *text = request(url);
     if (text == NULL) {
@@ -309,31 +313,31 @@ void *fa_fetch(void *arg) {
     }
 
     const char *aircraftType = json_string_value(json_object_get(flight, "aircraftType"));
-    a->aircraftType = malloc(strlen(aircraftType));
+    a->aircraftType = malloc(strlen(aircraftType) + 1);
     strcpy(a->aircraftType, aircraftType);
 
     const char *dest = json_string_value(json_object_get(flight, "dest"));
-    a->dest = malloc(strlen(dest));
+    a->dest = malloc(strlen(dest) + 1);
     strcpy(a->dest, dest);
 
     const char *destCity = json_string_value(json_object_get(flight, "destCity"));
-    a->destCity = malloc(strlen(destCity));
+    a->destCity = malloc(strlen(destCity) + 1);
     strcpy(a->destCity, destCity);
 
     const char *destName = json_string_value(json_object_get(flight, "destName"));
-    a->destName = malloc(strlen(destName));
+    a->destName = malloc(strlen(destName) + 1);
     strcpy(a->destName, destName);
 
     const char *orig = json_string_value(json_object_get(flight, "orig"));
-    a->orig = malloc(strlen(orig));
+    a->orig = malloc(strlen(orig) + 1);
     strcpy(a->orig, orig);
 
     const char *origCity = json_string_value(json_object_get(flight, "origCity"));
-    a->origCity = malloc(strlen(origCity));
+    a->origCity = malloc(strlen(origCity) + 1);
     strcpy(a->origCity, origCity);
 
     const char *origName = json_string_value(json_object_get(flight, "origName"));
-    a->origName = malloc(strlen(origName));
+    a->origName = malloc(strlen(origName) + 1);
     strcpy(a->origName, origName);
 
     json_decref(root);
@@ -485,7 +489,8 @@ struct aircraft *interactiveReceiveData(struct modesMessage *mm) {
         }  
     }
 
-    if ((a->bFlags & (MODES_ACFLAGS_LATLON_VALID | MODES_ACFLAGS_CALLSIGN_VALID)) && (a->fetched == 0)) {
+    if ((a->bFlags & (MODES_ACFLAGS_LATLON_VALID | MODES_ACFLAGS_CALLSIGN_VALID)) && (a->fetched == 0)
+            && (strlen(a->flight) > 3)) {
         pthread_t thread;
         a->fetched = 1;
         pthread_create(&thread, NULL, fa_fetch, a);

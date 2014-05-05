@@ -182,7 +182,7 @@
 #define HTMLPATH   "./public_html"      // default path for gmap.html etc
 #endif
 
-#define FA_URL_FORMAT "http://lukejohnston:%s@flightxml.flightaware.com/json/FlightXML2/FlightInfoEx?ident=%s&howMany=10&offset=0"
+#define FA_URL_FORMAT "http://flightxml.flightaware.com/json/FlightXML2/FlightInfoEx?ident=%s&howMany=10&offset=0"
 #define FA_KEY_LENGTH 40
 #define FA_BUFFER_SIZE  (256 * 1024)  /* 256 KB */
 
