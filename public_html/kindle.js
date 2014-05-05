@@ -134,13 +134,13 @@ function refreshTableInfo() {
 			document.getElementById('messagesvalue').innerHTML = tableplane.messages;
 			document.getElementById('seenvalue').innerHTML = tableplane.seen;
 
-			document.getElementById('aircrafttypevalue').innerHTML = tableplane.seen;
-			document.getElementById('destvalue').innerHTML = tableplane.seen;
-			document.getElementById('destcityvalue').innerHTML = tableplane.seen;
-			document.getElementById('destnamevalue').innerHTML = tableplane.seen;
-			document.getElementById('origvalue').innerHTML = tableplane.seen;
-			document.getElementById('origcityvalue').innerHTML = tableplane.seen;
-			document.getElementById('orignamevalue').innerHTML = tableplane.seen;
+			document.getElementById('aircrafttypevalue').innerHTML = tableplane.aircraftType;
+			document.getElementById('destvalue').innerHTML = tableplane.dest;
+			document.getElementById('destcityvalue').innerHTML = tableplane.destCity;
+			document.getElementById('destnamevalue').innerHTML = tableplane.destName;
+			document.getElementById('origvalue').innerHTML = tableplane.orig;
+			document.getElementById('origcityvalue').innerHTML = tableplane.origCity;
+			document.getElementById('orignamevalue').innerHTML = tableplane.origName;
 			break;
 		}
 	}
