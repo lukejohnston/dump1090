@@ -15,6 +15,14 @@ var planeObject = {
 	squawk		: null,
 	icao		: null,
 	is_selected	: false,	
+	fetched		: 0,
+	aircraftType: null,
+	dest		: null,
+	destCity	: null,
+	destName	: null,
+	orig		: null,
+	origCity	: null,
+	origName	: null,
 
 	// Data packet numbers
 	messages	: null,
@@ -47,6 +55,14 @@ var planeObject = {
 			this.icao	= data.hex;
 			this.messages	= data.messages;
 			this.seen	= data.seen;
+			this.fetched = data.fetched;
+			this.aircraftType = data.aircraftType;
+			this.dest = data.dest;
+			this.destCity = data.destCity;
+			this.destName = data.destName;
+			this.orig = data.orig;
+			this.origCity = data.origCity;
+			this.origName = data.origName;
 
 			// If no packet in over 58 seconds, consider the plane reapable
 			// This way we can hold it, but not show it just in case the plane comes back

@@ -170,6 +170,177 @@ void interactiveUpdateAircraftModeS() {
         a = a->next;
     }
 }
+
+static size_t write_response(void *ptr, size_t size, size_t nmemb, void *stream)
+{
+    struct write_result *result = (struct write_result *)stream;
+
+    if(result->pos + size * nmemb >= FA_BUFFER_SIZE - 1)
+    {
+        fprintf(stderr, "error: too small buffer\n");
+        return 0;
+    }
+
+    memcpy(result->data + result->pos, ptr, size * nmemb);
+    result->pos += size * nmemb;
+
+    return size * nmemb;
+}
+
+static char *request(const char *url)
+{
+    CURL *curl = NULL;
+    CURLcode status;
+    struct curl_slist *headers = NULL;
+    char *data = NULL;
+    long code;
+
+    curl_global_init(CURL_GLOBAL_ALL);
+    curl = curl_easy_init();
+    if(!curl)
+        goto error;
+
+    data = malloc(FA_BUFFER_SIZE);
+    if(!data)
+        goto error;
+
+    struct write_result write_result = {
+        .data = data,
+        .pos = 0
+    };
+
+    curl_easy_setopt(curl, CURLOPT_URL, url);
+
+    headers = curl_slist_append(headers, "User-Agent: dump1090");
+    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_response);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &write_result);
+
+    status = curl_easy_perform(curl);
+    if(status != 0)
+    {
+        fprintf(stderr, "error: unable to request data from %s:\n", url);
+        fprintf(stderr, "%s\n", curl_easy_strerror(status));
+        goto error;
+    }
+
+    curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &code);
+    if(code != 200)
+    {
+        fprintf(stderr, "error: server responded with code %ld\n", code);
+        goto error;
+    }
+
+    curl_easy_cleanup(curl);
+    curl_slist_free_all(headers);
+    curl_global_cleanup();
+
+    /* zero-terminate the result */
+    data[write_result.pos] = '\0';
+
+    return data;
+
+error:
+    if(data)
+        free(data);
+    if(curl)
+        curl_easy_cleanup(curl);
+    if(headers)
+        curl_slist_free_all(headers);
+    curl_global_cleanup();
+    return NULL;
+}
+
+
+void *fa_fetch(void *arg) {
+    struct aircraft *a = (struct aircraft *)arg;
+
+    char key[FA_KEY_LENGTH + 1];
+    FILE *keyfile = fopen("keyfile", "r");
+    fgets(key, FA_KEY_LENGTH, keyfile);
+    fclose(keyfile);
+
+    char url[2048];
+    sprintf(url, FA_URL_FORMAT, key, a->flight);
+    
+    char *text = request(url);
+    if (text == NULL) {
+        return NULL;
+    }
+
+    json_t *root;
+    json_error_t error;
+
+    root = json_loads(text, 0, &error);
+    free(text);
+
+    if (!root)
+    {
+        return NULL;
+    }
+
+    if(!json_is_array(root)) {
+        json_decref(root);
+        return NULL;
+    }
+
+    json_t *flight = NULL;
+    unsigned int i;
+
+    for (i = 0; i < json_array_size(root); i++) {
+        json_t *temp;
+
+        temp = json_array_get(root, i);
+        if (!json_is_object(temp)) {
+            continue;
+        }
+
+        if ((json_integer_value(json_object_get(temp, "actualarrivaltime")) == 0) 
+                && (json_integer_value(json_object_get(temp, "actualdeparturetime")) > 0)) {
+            flight = temp;
+            break;
+        }
+    }
+
+    if (!flight) {
+        json_decref(root);
+        return NULL;
+    }
+
+    const char *aircraftType = json_string_value(json_object_get(flight, "aircraftType"));
+    a->aircraftType = malloc(strlen(aircraftType));
+    strcpy(a->aircraftType, aircraftType);
+
+    const char *dest = json_string_value(json_object_get(flight, "dest"));
+    a->dest = malloc(strlen(dest));
+    strcpy(a->dest, dest);
+
+    const char *destCity = json_string_value(json_object_get(flight, "destCity"));
+    a->destCity = malloc(strlen(destCity));
+    strcpy(a->destCity, destCity);
+
+    const char *destName = json_string_value(json_object_get(flight, "destName"));
+    a->destName = malloc(strlen(destName));
+    strcpy(a->destName, destName);
+
+    const char *orig = json_string_value(json_object_get(flight, "orig"));
+    a->orig = malloc(strlen(orig));
+    strcpy(a->orig, orig);
+
+    const char *origCity = json_string_value(json_object_get(flight, "origCity"));
+    a->origCity = malloc(strlen(origCity));
+    strcpy(a->origCity, origCity);
+
+    const char *origName = json_string_value(json_object_get(flight, "origName"));
+    a->origName = malloc(strlen(origName));
+    strcpy(a->origName, origName);
+
+    json_decref(root);
+
+    return NULL;
+}
+
 //
 //=========================================================================
 //
@@ -314,6 +485,13 @@ struct aircraft *interactiveReceiveData(struct modesMessage *mm) {
         }  
     }
 
+    if ((a->bFlags & (MODES_ACFLAGS_LATLON_VALID | MODES_ACFLAGS_CALLSIGN_VALID)) && (a->fetched == 0)) {
+        pthread_t thread;
+        a->fetched = 1;
+        pthread_create(&thread, NULL, fa_fetch, a);
+        pthread_detach(thread);
+    }
+
     return (a);
 }
 //
@@ -450,6 +628,34 @@ void interactiveRemoveStaleAircrafts(void) {
 
     while(a) {
         if ((now - a->seen) > Modes.interactive_delete_ttl) {
+            if (a->aircraftType != NULL) {
+                free(a->aircraftType);
+            }
+
+            if (a->dest != NULL) {
+                free(a->dest);
+            }
+
+            if (a->destCity != NULL) {
+                free(a->destCity);
+            }
+
+            if (a->destName != NULL) {
+                free(a->destName);
+            }
+
+            if (a->orig != NULL) {
+                free(a->orig);
+            }
+
+            if (a->origCity != NULL) {
+                free(a->origCity);
+            }
+
+            if (a->origName != NULL) {
+                free(a->origName);
+            }
+
             struct aircraft *next = a->next;
             // Remove the element from the linked list, with care
             // if we are removing the first element
@@ -470,3 +676,5 @@ void interactiveRemoveStaleAircrafts(void) {
 //
 //=========================================================================
 //
+
+

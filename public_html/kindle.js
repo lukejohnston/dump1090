@@ -112,7 +112,7 @@ function refreshTableInfo() {
 	//var html = '<table id="tableinfo" width="100%"><tbody>';
 	for (var tablep in Planes) {
 		var tableplane = Planes[tablep]
-		if (!tableplane.reapable) {
+		if (!tableplane.reapable && tableplane.fetched) {
 			document.getElementById('icaovalue').innerHTML = tableplane.icao;
 			document.getElementById('flightvalue').innerHTML = tableplane.flight;
 
@@ -134,6 +134,13 @@ function refreshTableInfo() {
 			document.getElementById('messagesvalue').innerHTML = tableplane.messages;
 			document.getElementById('seenvalue').innerHTML = tableplane.seen;
 
+			document.getElementById('aircrafttypevalue').innerHTML = tableplane.seen;
+			document.getElementById('destvalue').innerHTML = tableplane.seen;
+			document.getElementById('destcityvalue').innerHTML = tableplane.seen;
+			document.getElementById('destnamevalue').innerHTML = tableplane.seen;
+			document.getElementById('origvalue').innerHTML = tableplane.seen;
+			document.getElementById('origcityvalue').innerHTML = tableplane.seen;
+			document.getElementById('orignamevalue').innerHTML = tableplane.seen;
 			break;
 		}
 	}

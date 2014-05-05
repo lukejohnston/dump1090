@@ -57,6 +57,8 @@
     #include <ctype.h>
     #include <sys/stat.h>
     #include <sys/ioctl.h>
+    #include <jansson.h>
+    #include <curl/curl.h>
     #include "rtl-sdr.h"
     #include "anet.h"
 #else
@@ -180,9 +182,19 @@
 #define HTMLPATH   "./public_html"      // default path for gmap.html etc
 #endif
 
+#define FA_URL_FORMAT "http://lukejohnston:%s@flightxml.flightaware.com/json/FlightXML2/FlightInfoEx?ident=%s&howMany=10&offset=0"
+#define FA_KEY_LENGTH 40
+#define FA_BUFFER_SIZE  (256 * 1024)  /* 256 KB */
+
 #define MODES_NOTUSED(V) ((void) V)
 
 //======================== structure declarations =========================
+
+struct write_result
+{
+    char *data;
+    int pos;
+};
 
 // Structure used to describe a networking client
 struct client {
@@ -222,6 +234,16 @@ struct aircraft {
     double        lat, lon;       // Coordinated obtained from CPR encoded data
     int           bFlags;         // Flags related to valid fields in this structure
     struct aircraft *next;        // Next aircraft in our linked list
+
+    // FlightAware API additional data
+    int           fetched;        // Non-zero if we have attempted to fetch data from the FlightAware API
+    char         *aircraftType;   // Description of aircraft type
+    char         *dest;           // Destination airport code
+    char         *destCity;       // Destination city name
+    char         *destName;       // Destination airport name
+    char         *orig;           // Origin airport code
+    char         *origCity;       // Origin city name
+    char         *origName;       // Origin airport name
 };
 
 // Program global state
