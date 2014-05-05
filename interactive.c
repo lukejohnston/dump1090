@@ -222,7 +222,6 @@ static char *request(const char *url)
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_response);
-    curl_easy_setopt(curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
     curl_easy_setopt(curl, CURLOPT_USERPWD, userpwd);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &write_result);
 
@@ -270,10 +269,11 @@ void *fa_fetch(void *arg) {
     
     char *text = request(url);
     if (text == NULL) {
+        fprintf(stderr, "No text from api\n");
         return NULL;
     }
 
-    json_t *root;
+    json_t *root, *array, *middle;
     json_error_t error;
 
     root = json_loads(text, 0, &error);
@@ -281,21 +281,20 @@ void *fa_fetch(void *arg) {
 
     if (!root)
     {
+        fprintf(stderr, "No json in text");
         return NULL;
     }
 
-    if(!json_is_array(root)) {
-        json_decref(root);
-        return NULL;
-    }
+    middle = json_object_get(root, "FlightInfoExResult");
+    array = json_object_get(middle, "flights");
 
     json_t *flight = NULL;
     unsigned int i;
 
-    for (i = 0; i < json_array_size(root); i++) {
+    for (i = 0; i < json_array_size(array); i++) {
         json_t *temp;
 
-        temp = json_array_get(root, i);
+        temp = json_array_get(array, i);
         if (!json_is_object(temp)) {
             continue;
         }
