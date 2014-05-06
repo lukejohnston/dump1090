@@ -267,25 +267,35 @@ void *fa_fetch(void *arg) {
     char url[2048];
     sprintf(url, FA_URL_FORMAT, a->flight);
     
+    fprintf(stderr, "requesting %s\n", url);
+    fflush(stderr);
     char *text = request(url);
     if (text == NULL) {
         fprintf(stderr, "No text from api\n");
+        fflush(stderr);
         return NULL;
     }
 
     json_t *root, *array, *middle;
     json_error_t error;
 
+    fprintf(stderr, "loading json\n");
+    fflush(stderr);
     root = json_loads(text, 0, &error);
     free(text);
 
     if (!root)
     {
         fprintf(stderr, "No json in text");
+        fflush(stderr);
         return NULL;
     }
 
+    fprintf(stderr, "Getting middle\n");
+    fflush(stderr);
     middle = json_object_get(root, "FlightInfoExResult");
+    fprintf(stderr, "Getting array\n");
+    fflush(stderr);
     array = json_object_get(middle, "flights");
 
     json_t *flight = NULL;
@@ -294,23 +304,33 @@ void *fa_fetch(void *arg) {
     for (i = 0; i < json_array_size(array); i++) {
         json_t *temp;
 
+        fprintf(stderr, "Get temp\n");
+        fflush(stderr);
         temp = json_array_get(array, i);
         if (!json_is_object(temp)) {
             continue;
         }
 
+        fprintf(stderr, "Get ints\n");
+        fflush(stderr);
         if ((json_integer_value(json_object_get(temp, "actualarrivaltime")) == 0) 
                 && (json_integer_value(json_object_get(temp, "actualdeparturetime")) > 0)) {
+            fprintf(stderr, "Found flight\n");
+            fflush(stderr);
             flight = temp;
             break;
         }
     }
 
     if (!flight) {
+        fprintf(stderr, "Didn't find flight\n");
+        fflush(stderr);
         json_decref(root);
         return NULL;
     }
 
+    fprintf(stderr, "Getting strings\n");
+    fflush(stderr);
     const char *aircraftType = json_string_value(json_object_get(flight, "aircraftType"));
     a->aircraftType = malloc(strlen(aircraftType) + 1);
     strcpy(a->aircraftType, aircraftType);
@@ -339,6 +359,8 @@ void *fa_fetch(void *arg) {
     a->origName = malloc(strlen(origName) + 1);
     strcpy(a->origName, origName);
 
+    fprintf(stderr, "done\n");
+    fflush(stderr);
     json_decref(root);
 
     return NULL;
