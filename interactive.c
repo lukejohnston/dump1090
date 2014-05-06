@@ -331,31 +331,31 @@ void *fa_fetch(void *arg) {
 
     fprintf(stderr, "Getting strings\n");
     fflush(stderr);
-    const char *aircraftType = json_string_value(json_object_get(flight, "aircraftType"));
+    const char *aircraftType = json_string_value(json_object_get(flight, "aircrafttype"));
     a->aircraftType = malloc(strlen(aircraftType) + 1);
     strcpy(a->aircraftType, aircraftType);
 
-    const char *dest = json_string_value(json_object_get(flight, "dest"));
+    const char *dest = json_string_value(json_object_get(flight, "destination"));
     a->dest = malloc(strlen(dest) + 1);
     strcpy(a->dest, dest);
 
-    const char *destCity = json_string_value(json_object_get(flight, "destCity"));
+    const char *destCity = json_string_value(json_object_get(flight, "destinationCity"));
     a->destCity = malloc(strlen(destCity) + 1);
     strcpy(a->destCity, destCity);
 
-    const char *destName = json_string_value(json_object_get(flight, "destName"));
+    const char *destName = json_string_value(json_object_get(flight, "destinationName"));
     a->destName = malloc(strlen(destName) + 1);
     strcpy(a->destName, destName);
 
-    const char *orig = json_string_value(json_object_get(flight, "orig"));
+    const char *orig = json_string_value(json_object_get(flight, "origin"));
     a->orig = malloc(strlen(orig) + 1);
     strcpy(a->orig, orig);
 
-    const char *origCity = json_string_value(json_object_get(flight, "origCity"));
+    const char *origCity = json_string_value(json_object_get(flight, "originCity"));
     a->origCity = malloc(strlen(origCity) + 1);
     strcpy(a->origCity, origCity);
 
-    const char *origName = json_string_value(json_object_get(flight, "origName"));
+    const char *origName = json_string_value(json_object_get(flight, "originName"));
     a->origName = malloc(strlen(origName) + 1);
     strcpy(a->origName, origName);
 
