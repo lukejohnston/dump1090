@@ -113,7 +113,6 @@ function refreshTableInfo() {
 	for (var tablep in Planes) {
 		var tableplane = Planes[tablep]
 		if (!tableplane.reapable && tableplane.fetched) {
-			document.getElementById('icaovalue').innerHTML = tableplane.icao;
 			document.getElementById('flightvalue').innerHTML = tableplane.flight;
 
 			if (tableplane.squawk != '0000' ) {
@@ -131,17 +130,23 @@ function refreshTableInfo() {
 				document.getElementById('trackvalue').innerHTML = '&nbsp;';
 		    }
 
-			document.getElementById('messagesvalue').innerHTML = tableplane.messages;
-			document.getElementById('seenvalue').innerHTML = tableplane.seen;
-
 			document.getElementById('aircrafttypevalue').innerHTML = tableplane.aircraftType;
 			document.getElementById('destvalue').innerHTML = tableplane.dest;
 			document.getElementById('destcityvalue').innerHTML = tableplane.destCity;
-			document.getElementById('destnamevalue').innerHTML = tableplane.destName;
 			document.getElementById('origvalue').innerHTML = tableplane.orig;
 			document.getElementById('origcityvalue').innerHTML = tableplane.origCity;
-			document.getElementById('orignamevalue').innerHTML = tableplane.origName;
-			break;
+			return;
 		}
 	}
+
+	document.getElementById('aircrafttypevalue').innerHTML = '&nbsp;';
+	document.getElementById('destvalue').innerHTML = '&nbsp;';
+	document.getElementById('destcityvalue').innerHTML = '&nbsp;';
+	document.getElementById('origvalue').innerHTML = '&nbsp;';
+	document.getElementById('origcityvalue').innerHTML = '&nbsp;';
+	document.getElementById('trackvalue').innerHTML = '&nbsp;';
+	document.getElementById('altitudevalue').innerHTML = '&nbsp;';
+	document.getElementById('speedvalue').innerHTML = '&nbsp;';
+	document.getElementById('squawkvalue').innerHTML = '&nbsp;';
+	document.getElementById('flightvalue').innerHTML = '&nbdp;';
 }
