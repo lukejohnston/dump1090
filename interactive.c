@@ -366,6 +366,14 @@ void *fa_fetch(void *arg) {
     return NULL;
 }
 
+int isInRange(double lat, double lon)
+{
+    return (lat < 47.64)
+        && (lat > 47.4984)
+        && (lon < -122.341)
+        && (lon > -122.531);
+}
+
 //
 //=========================================================================
 //
@@ -510,8 +518,20 @@ struct aircraft *interactiveReceiveData(struct modesMessage *mm) {
         }  
     }
 
+    // Alaska flight number hack
+    if (isdigit(a->flight[0]) && isdigit(a->flight[1]) && isdigit(a->flight[2]))
+    {
+        a->flight[3] = a->flight[0];
+        a->flight[4] = a->flight[1];
+        a->flight[5] = a->flight[2];
+        a->flight[6] = '\0';
+        a->flight[0] = 'A';
+        a->flight[0] = 'S';
+        a->flight[0] = 'A';
+    }
+
     if ((a->bFlags & (MODES_ACFLAGS_LATLON_VALID | MODES_ACFLAGS_CALLSIGN_VALID)) && (a->fetched == 0)
-            && (strlen(a->flight) > 3)) {
+            && (strlen(a->flight) > 3) && isInRange(a->lat, a->lon)) {
         pthread_t thread;
         a->fetched = 1;
         pthread_create(&thread, NULL, fa_fetch, a);
