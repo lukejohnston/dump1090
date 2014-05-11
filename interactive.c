@@ -198,7 +198,7 @@ static char *request(const char *url)
     char key[FA_KEY_LENGTH + 1];
     char userpwd[FA_KEY_LENGTH + 13 + 1];
     FILE *keyfile = fopen("keyfile", "r");
-    fgets(key, FA_KEY_LENGTH, keyfile);
+    fgets(key, FA_KEY_LENGTH + 1, keyfile);
     fclose(keyfile);
     sprintf(userpwd, "lukejohnston:%s", key);
 

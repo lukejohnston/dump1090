@@ -148,5 +148,5 @@ function refreshTableInfo() {
 	document.getElementById('altitudevalue').innerHTML = '&nbsp;';
 	document.getElementById('speedvalue').innerHTML = '&nbsp;';
 	document.getElementById('squawkvalue').innerHTML = '&nbsp;';
-	document.getElementById('flightvalue').innerHTML = '&nbdp;';
+	document.getElementById('flightvalue').innerHTML = '&nbsp;';
 }
