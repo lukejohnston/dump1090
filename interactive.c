@@ -521,7 +521,9 @@ struct aircraft *interactiveReceiveData(struct modesMessage *mm) {
     }
 
     // Alaska flight number hack
-    if (isdigit(a->flight[0]) && isdigit(a->flight[1]) && isdigit(a->flight[2]))
+    if ((isdigit(a->flight[0]) || a->flight[0] == 'A')
+            && (isdigit(a->flight[1] || isspace(a->flight[1])))
+            && (isdigit(a->flight[2]) || isspace(a->flight[2])))
     {
         a->flight[3] = a->flight[0];
         a->flight[4] = a->flight[1];
